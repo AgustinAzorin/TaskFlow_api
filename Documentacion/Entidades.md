@@ -1,4 +1,3 @@
--- Primero se crean los ENUM si los vas a usar
 CREATE TYPE rol_enum AS ENUM ('admin', 'usuario', 'invitado');
 CREATE TYPE estado_enum AS ENUM ('pendiente', 'en_progreso', 'completada');
 CREATE TYPE prioridad_enum AS ENUM ('alta', 'media', 'baja');

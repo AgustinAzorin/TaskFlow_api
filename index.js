@@ -1,36 +1,33 @@
 // npm i express
 // npm install pg
-const express = require("express"); // Importar express
-require("dotenv").config();
-const { Pool } = require("pg"); // Importar pg
-const path = require("path");
+require('dotenv').config();
+const express = require('express');
+const { Pool } = require('pg');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-// Configurar conexión a PostgreSQL. npm install dotenv
+// Configurar conexión a PostgreSQL
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-  });
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// Ruta de prueba: obtener datos de la tabla "Usuario"
+app.get('/usuarios', async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM "Usuario"'); // comillas si usaste mayúsculas
+    res.json(resultado.rows);
+  } catch (err) {
+    console.error('Error en la consulta:', err);
+    res.status(500).send('Error en la consulta');
+  }
+});
 
-// Ruta de prueba
-app.get("/Usuario", async (req, res) => {
-    try {
-      const result = await pool.query("SELECT * FROM Usuario");
-      res.json(result.rows);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error obteniendo usuarios");
-    }
-  });
-  
 // Iniciar servidor
 app.listen(port, () => {
-  console.log("El servidor está corriendo en el puerto:", port);
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
