@@ -29,6 +29,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors({
+  origin: 'https://taskflow-api-a3ur.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
+
+app.options('*', cors());
+
 app.use(express.json()); // Necesario para leer los archivos JSON
 
 console.log('Conectando a:', process.env.DATABASE_URL);
