@@ -72,7 +72,7 @@
 
   <script>
     function cargarUsuarios() {
-      fetch('https://taskflow-rnlr.onrender.com')
+      fetch('https://taskflow-rnlr.onrender.com/usuarios')
         .then(response => response.json())
         .then(data => {
           const tableHeaders = document.getElementById('tableHeaders');

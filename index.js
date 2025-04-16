@@ -24,9 +24,10 @@ const transporter = nodemailer.createTransport({
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({
-  origin: 'https://taskflow-api-a3ur.onrender.com' // ← tu frontend
-}));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://taskflow-api-a3ur.onrender.com');
+  next();
+});
 
 app.use(express.json()); // Necesario para leer los archivos JSON
 
