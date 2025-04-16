@@ -52,6 +52,8 @@ app.get('/usuarios', async (req, res) => {
 //Crear un nuevo usuario
 app.post('/usuarios', async (req, res) => {
   const { nombre, email, contrasena, rol, fecha } = req.body;
+  console.log('Nuevo usuario recibido:', { nombre, email, contrasena, rol, fecha });
+
 
   try {
     const query = `
@@ -73,9 +75,10 @@ app.post('/usuarios', async (req, res) => {
 
     res.status(201).json(resultado.rows[0]);
   } catch (err) {
-    console.error('Error al insertar usuario:', err);
-    res.status(500).send('Error al insertar usuario');
+    console.error('Error al insertar usuario:', err.message);
+    res.status(500).send('Error al insertar usuario: ' + err.message);
   }
+  
 });
 
 
