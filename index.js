@@ -17,8 +17,7 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false // Esto permite certificados autofirmados
-  },
-  ssl: { rejectUnauthorized: false }
+  }
 });
 
 
@@ -128,7 +127,7 @@ app.delete('/usuarios/:id', async (req, res) => {
       from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Tu cuenta ha sido eliminada',
-      text: `Hola ${Usuario_Nombre}, tu cuenta con rol ${Rol} ha sido eliminada del sistema.`,
+      text: `Hola ${nombre}, tu cuenta con rol ${rol} ha sido eliminada del sistema.`,
     });
 
     res.status(204).send(); // No Content
@@ -142,5 +141,5 @@ app.delete('/usuarios/:id', async (req, res) => {
 
 // Iniciar servidor
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en http://localhost:${port} o en producción`);
 });
