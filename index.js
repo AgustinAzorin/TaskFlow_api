@@ -32,6 +32,9 @@ const pool = new Pool({
    connectionString: process.env.DATABASE_URL,
 });
 
+app.get('/', (req, res) => {
+  res.send('API de TaskFlow funcionando 🚀');
+});
 // Ruta de prueba: obtener datos de la tabla "Usuario"
 app.get('/usuarios', async (req, res) => {
   try {
