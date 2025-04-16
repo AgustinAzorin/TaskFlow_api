@@ -17,23 +17,20 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false // Esto permite certificados autofirmados
-  }
+  },
+  ssl: { rejectUnauthorized: false }
 });
 
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors()); // Complementario de lo que explique anteriormente
 app.use(express.json()); // Necesario para leer los archivos JSON
 
 // Configurar conexión a PostgreSQL
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+   connectionString: process.env.DATABASE_URL,
 });
 
 // Ruta de prueba: obtener datos de la tabla "Usuario"
