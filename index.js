@@ -30,6 +30,7 @@ app.use(cors({
 
 app.use(express.json()); // Necesario para leer los archivos JSON
 
+console.log('Conectando a:', process.env.DATABASE_URL);
 // Configurar conexión a PostgreSQL
 const pool = new Pool({
    connectionString: process.env.DATABASE_URL,
