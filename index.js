@@ -5,6 +5,8 @@ const express = require('express'); // Importa el paquete express
 const { Pool } = require('pg'); // Importa el paquete postgresSQL
 const cors = require('cors'); //Necesario para que el backend admita conexiones del frontend
 const nodemailer = require('nodemailer'); // Importa el paquete paa enviar mails *fuegito*
+const bcrypt = require('bcrypt'); //Importa el paquete para hashear
+const saltRounds = 10;
 
 // Configurá el transporte 
 const transporter = nodemailer.createTransport({
@@ -70,14 +72,16 @@ app.post('/usuarios', async (req, res) => {
   const { nombre, email, contrasena, rol, fecha } = req.body;
   console.log('Nuevo usuario recibido:', { nombre, email, contrasena, rol, fecha });
 
-
   try {
+    // Hasheamos la contraseña antes de guardarla
+    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+
     const query = `
       INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion")
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
-    const valores = [nombre, email, contrasena, rol, fecha];
+    const valores = [nombre, email, hashedPassword, rol, fecha];
 
     const resultado = await pool.query(query, valores);
 
@@ -94,7 +98,6 @@ app.post('/usuarios', async (req, res) => {
     console.error('Error al insertar usuario:', err.message);
     res.status(500).send('Error al insertar usuario: ' + err.message);
   }
-  
 });
 
 
@@ -162,30 +165,36 @@ app.delete('/usuarios/:id', async (req, res) => {
   }
 });
 
-// Verificar login
+//Login
 app.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
 
   try {
-    const query = `
-      SELECT * FROM "Usuario"
-      WHERE "Email" = $1 AND "Contraseña" = $2
-      LIMIT 1;
-    `;
-    const valores = [email, contrasena];
+    const resultado = await pool.query(
+      'SELECT * FROM "Usuario" WHERE "Email" = $1',
+      [email]
+    );
 
-    const resultado = await pool.query(query, valores);
-
-    if (resultado.rows.length > 0) {
-      res.json({ success: true, usuario: resultado.rows[0] });
-    } else {
-      res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
+    if (resultado.rows.length === 0) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-  } catch (err) {
-    console.error('Error al verificar login:', err);
-    res.status(500).send('Error en el login');
+
+    const usuario = resultado.rows[0];
+
+    const esValida = await bcrypt.compare(contrasena, usuario.Contraseña);
+
+    if (!esValida) {
+      return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
+    }
+
+    // Si es válida:
+    res.status(200).json({ mensaje: 'Inicio de sesión exitoso', usuario });
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
 });
+
 // Iniciar servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port} o en producción`);
