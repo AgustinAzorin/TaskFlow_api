@@ -187,6 +187,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('usuario'); // o 'token', dependiendo de qué guardaste
+  window.location.href = 'login.html'; // o redireccioná a donde quieras
+});
+
 
 
 
