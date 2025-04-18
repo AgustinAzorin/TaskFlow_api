@@ -4,56 +4,12 @@
   <meta charset="UTF-8">
   <title>Lista de Usuarios</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f2f2f2;
-    }
-    h1 {
-      color: #333;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background-color: #fff;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.75rem;
-      text-align: left;
-    }
-    th {
-      background-color: #eee;
-    }
-    form {
-      margin-top: 2rem;
-      background-color: #fff;
-      padding: 1rem;
-      border: 1px solid #ccc;
-    }
-    input, select {
-      margin-bottom: 0.75rem;
-      display: block;
-      width: 100%;
-      padding: 0.5rem;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Usuarios</h1>
   <table id="usuariosTable">
-    <thead>
-      <tr id="tableHeaders"></tr>
-    </thead>
+    <thead><tr id="tableHeaders"></tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
 
@@ -70,85 +26,6 @@
     <button type="submit">Agregar</button>
   </form>
 
-  <script>
-    function cargarUsuarios() {
-      fetch('https://taskflow-rnlr.onrender.com/usuarios')
-        .then(response => response.json())
-        .then(data => {
-          const tableHeaders = document.getElementById('tableHeaders');
-          const tableBody = document.getElementById('tableBody');
-
-          tableHeaders.innerHTML = '';
-          tableBody.innerHTML = '';
-
-          if (data.length > 0) {
-            Object.keys(data[0]).forEach(key => {
-              const th = document.createElement('th');
-              th.textContent = key;
-              tableHeaders.appendChild(th);
-            });
-
-            data.forEach(usuario => {
-              const tr = document.createElement('tr');
-              Object.values(usuario).forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value;
-                tr.appendChild(td);
-              });
-              tableBody.appendChild(tr);
-            });
-          } else {
-            const tr = document.createElement('tr');
-            const td = document.createElement('td');
-            td.colSpan = 100;
-            td.textContent = 'No hay usuarios disponibles.';
-            tr.appendChild(td);
-            tableBody.appendChild(tr);
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener los usuarios:', error);
-        });
-    }
-
-    document.getElementById('usuarioForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const nuevoUsuario = {
-        nombre: document.getElementById('nombre').value,
-        email: document.getElementById('email').value,
-        contrasena: document.getElementById('contrasena').value,
-        rol: document.getElementById('rol').value,
-        fecha: document.getElementById('fecha').value
-      };
-
-      fetch('https://taskflow-rnlr.onrender.com/usuarios', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(nuevoUsuario)
-      })
-      .then(async res => {
-        if (!res.ok) {
-          const texto = await res.text();
-          throw new Error(texto);
-        }
-        return res.json();
-      })
-      .then(data => {
-        alert('Usuario agregado');
-        cargarUsuarios();
-        document.getElementById('usuarioForm').reset();
-      })
-      .catch(error => {
-        alert('Error al agregar usuario: ' + error.message);
-        console.error('Error al agregar usuario:', error);
-      });
-    });
-
-    // Cargar usuarios al inicio
-    cargarUsuarios();
-  </script>
+  <script src="scripts.js"></script>
 </body>
 </html>

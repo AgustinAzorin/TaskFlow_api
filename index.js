@@ -30,14 +30,17 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: 'https://taskflow-api-a3ur.onrender.com',
+  origin: ['http://localhost:3000', 'https://taskflow-api-a3ur.onrender.com', 'https://taskflow-rnlr.onrender.com'], // permití ambos orígenes
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type']
+  allowedHeaders: ['Content-Type'],
+  credentials: true
 }));
 
 app.options('*', cors());
 
 app.use(express.json()); // Necesario para leer los archivos JSON
+app.use(express.static('public'));
+
 
 console.log('Conectando a:', process.env.DATABASE_URL);
 // Configurar conexión a PostgreSQL
@@ -158,6 +161,32 @@ app.delete('/usuarios/:id', async (req, res) => {
     res.status(500).send('Error al eliminar usuario');
   }
 });
+
+// Verificar login
+app.post('/login', async (req, res) => {
+  const { email, contrasena } = req.body;
+
+  try {
+    const query = `
+      SELECT * FROM "Usuario"
+      WHERE "Email" = $1 AND "Contraseña" = $2
+      LIMIT 1;
+    `;
+    const valores = [email, contrasena];
+
+    const resultado = await pool.query(query, valores);
+
+    if (resultado.rows.length > 0) {
+      res.json({ success: true, usuario: resultado.rows[0] });
+    } else {
+      res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
+    }
+  } catch (err) {
+    console.error('Error al verificar login:', err);
+    res.status(500).send('Error en el login');
+  }
+});
+
 
 
 
