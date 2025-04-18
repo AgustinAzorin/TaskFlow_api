@@ -81,3 +81,8 @@ function cargarUsuarios() {
   // Cargar usuarios al inicio
   cargarUsuarios();
   
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('usuario');
+    window.location.href = 'login.html';
+  });
+  

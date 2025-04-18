@@ -186,15 +186,6 @@ app.post('/login', async (req, res) => {
     res.status(500).send('Error en el login');
   }
 });
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('usuario'); // o 'token', dependiendo de qué guardaste
-  window.location.href = 'login.html'; // o redireccioná a donde quieras
-});
-
-
-
-
 // Iniciar servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port} o en producción`);
