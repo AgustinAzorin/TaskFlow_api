@@ -13,16 +13,16 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     })
     .then(res => res.json())
     .then(data => {
-      if (data.success) {
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        window.location.href = 'index.html';
-      } else {
-        alert('Usuario o contraseña incorrectos');
-      }
-    })
+        if (data.token) {
+          localStorage.setItem('token', data.token); // <- guardás el token
+          localStorage.setItem('usuario', JSON.stringify(data.usuario)); // esto ya lo tenías
+          window.location.href = 'index.html';
+        } else {
+          alert('Usuario o contraseña incorrectos');
+        }
+      })
     .catch(err => {
       console.error('Error al iniciar sesión:', err);
       alert('Error en el login');
     });
   });
-  

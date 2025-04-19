@@ -3,7 +3,12 @@ if (!usuario) {
   window.location.href = 'login.html';
 }
 function cargarUsuarios() {
-    fetch('https://taskflow-rnlr.onrender.com/usuarios')
+    fetch('https://taskflow-rnlr.onrender.com/usuarios', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+      
       .then(response => response.json())
       .then(data => {
         const tableHeaders = document.getElementById('tableHeaders');
@@ -56,7 +61,8 @@ function cargarUsuarios() {
     fetch('https://taskflow-rnlr.onrender.com/usuarios', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
       },
       body: JSON.stringify(nuevoUsuario)
     })

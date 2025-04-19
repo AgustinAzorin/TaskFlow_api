@@ -7,6 +7,8 @@ const cors = require('cors'); //Necesario para que el backend admita conexiones 
 const nodemailer = require('nodemailer'); // Importa el paquete paa enviar mails *fuegito*
 const bcrypt = require('bcrypt'); //Importa el paquete para hashear
 const saltRounds = 10;
+const jwt = require('jsonwebtoken'); //Importa el paquete para los JWT
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Configurá el transporte 
 const transporter = nodemailer.createTransport({
@@ -21,6 +23,22 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false // Esto permite certificados autofirmados
   }
 });
+
+//Funcion para verificar el ,token
+function verificarToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ mensaje: 'Token faltante' });
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ mensaje: 'Token inválido o expirado' });
+
+    req.user = user;
+    next();
+  });
+}
+
 
 
 const app = express();
@@ -57,7 +75,7 @@ app.get('/', (req, res) => {
   res.send('API de TaskFlow funcionando 🚀');
 });
 // Ruta de prueba: obtener datos de la tabla "Usuario"
-app.get('/usuarios', async (req, res) => {
+app.get('/usuarios', verificarToken, async (req, res) => {
   try {
     const resultado = await pool.query('SELECT * FROM "Usuario"');
     res.json(resultado.rows);
@@ -199,6 +217,27 @@ app.post('/login', async (req, res) => {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
+  const token = jwt.sign(
+    {
+      id: usuario.Usuario_ID,
+      email: usuario.Email,
+      rol: usuario.Rol
+    },
+    JWT_SECRET,
+    { expiresIn: '1h' } // 1 hora de duración
+  );
+  
+  res.status(200).json({
+    success: true,
+    mensaje: 'Inicio de sesión exitoso',
+    token, // <- lo devolvés al cliente
+    usuario: {
+      id: usuario.Usuario_ID,
+      nombre: usuario.Usuario_Nombre,
+      email: usuario.Email,
+      rol: usuario.Rol
+    }
+  });
 });
 
 app.listen(port, () => {
