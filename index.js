@@ -170,16 +170,12 @@ app.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
 
   try {
-    const resultado = await pool.query(
-      'SELECT * FROM "Usuario" WHERE "Email" = $1',
-      [email]
-    );
+    const resultado = await pool.query(`SELECT * FROM "Usuario" WHERE "Email" = $1`, [email]);
+    const usuario = resultado.rows[0];
 
-    if (resultado.rows.length === 0) {
+    if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-
-    const usuario = resultado.rows[0];
 
     const esValida = await bcrypt.compare(contrasena, usuario.Contraseña);
 
@@ -187,15 +183,19 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
     }
 
-    // Si es válida:
-    res.status(200).json({ mensaje: 'Inicio de sesión exitoso', usuario });
+    // ¡Todo ok!
+    res.status(200).json({
+      mensaje: 'Inicio de sesión exitoso',
+      usuario: {
+        id: usuario.Usuario_ID,
+        nombre: usuario.Usuario_Nombre,
+        email: usuario.Email,
+        rol: usuario.Rol,
+      }
+    });
+
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
-});
-
-// Iniciar servidor
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port} o en producción`);
 });
