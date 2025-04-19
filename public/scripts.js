@@ -10,7 +10,9 @@ function cargarUsuarios() {
           alert('Debes iniciar sesión primero');
           window.location.href = 'login.html';
           return; // ✅ ahora está dentro de una función, y es legal
-        }        
+        }
+        console.log('Nuevo usuario:', nuevoUsuario);
+        
     fetch('https://taskflow-rnlr.onrender.com/usuarios', {
         headers: {
           'Authorization': 'Bearer ' + token
@@ -65,6 +67,9 @@ function cargarUsuarios() {
       rol: document.getElementById('rol').value,
       fecha: document.getElementById('fecha').value
     };
+
+    console.log('Nuevo usuario:', nuevoUsuario);
+
   
     fetch('https://taskflow-rnlr.onrender.com/usuarios', {
       method: 'POST',
