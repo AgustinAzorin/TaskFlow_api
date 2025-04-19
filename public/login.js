@@ -14,12 +14,17 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     .then(res => res.json())
     .then(data => {
         if (data.token) {
-          localStorage.setItem('token', data.token); // <- guardás el token
-          localStorage.setItem('usuario', JSON.stringify(data.usuario)); // esto ya lo tenías
-          window.location.href = 'index.html';
-        } else {
-          alert('Usuario o contraseña incorrectos');
-        }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('usuario', JSON.stringify(data.usuario));
+          
+            // Redireccionar según el rol
+            const rol = data.usuario.rol;
+            if (rol === 'admin') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'usuario.html';
+            }
+          }          
       })
     .catch(err => {
       console.error('Error al iniciar sesión:', err);
