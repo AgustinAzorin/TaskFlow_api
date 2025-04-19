@@ -185,6 +185,7 @@ app.post('/login', async (req, res) => {
 
     // ¡Todo ok!
     res.status(200).json({
+      success: true,
       mensaje: 'Inicio de sesión exitoso',
       usuario: {
         id: usuario.Usuario_ID,
