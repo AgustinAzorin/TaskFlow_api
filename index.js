@@ -23,7 +23,6 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false // Esto permite certificados autofirmados
   }
 });
-const token = localStorage.getItem('token');
 
 //Funcion para verificar el ,token
 function verificarToken(req, res, next) {
