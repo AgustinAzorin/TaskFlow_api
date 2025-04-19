@@ -1,7 +1,7 @@
 const usuario = JSON.parse(localStorage.getItem('usuario'));
-if (!usuario) {
-  window.location.href = 'login.html';
-}
+//if (!usuario) {
+//  window.location.href = 'login.html';
+//}
 function cargarUsuarios() {
     fetch('https://taskflow-rnlr.onrender.com/usuarios')
       .then(response => response.json())
