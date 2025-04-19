@@ -73,8 +73,8 @@ app.post('/usuarios', async (req, res) => {
   console.log('Nuevo usuario recibido:', { nombre, email, contrasena, rol, fecha });
 
   try {
-    // Hasheamos la contraseña antes de guardarla
-    const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+    // Hashear la contraseña
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
 
     const query = `
       INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion")
@@ -85,12 +85,12 @@ app.post('/usuarios', async (req, res) => {
 
     const resultado = await pool.query(query, valores);
 
-    // Enviar email de confirmación
+    // Enviar email de confirmación con el hash
     await transporter.sendMail({
       from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '¡Registro exitoso!',
-      text: `Hola ${nombre}, te registraste correctamente como ${rol} en la app.`,
+      text: `Hola ${nombre}, te registraste correctamente como ${rol} en la app.\n\nTu contraseña hasheada es:\n\n${hashedPassword}`
     });
 
     res.status(201).json(resultado.rows[0]);
@@ -199,3 +199,5 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
 });
+
+app.listen(port=3000)
