@@ -1,4 +1,18 @@
 const usuario = JSON.parse(localStorage.getItem('usuario'));
+const token = localStorage.getItem('token');
+
+if (!token) {
+    alert('Debes iniciar sesión primero');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+
 if (!usuario) {
   window.location.href = 'login.html';
 }

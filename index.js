@@ -23,6 +23,7 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false // Esto permite certificados autofirmados
   }
 });
+const token = localStorage.getItem('token');
 
 //Funcion para verificar el ,token
 function verificarToken(req, res, next) {
@@ -52,7 +53,7 @@ app.use((req, res, next) => {
 app.use(cors({
   origin: ['http://localhost:3000', 'https://taskflow-api-a3ur.onrender.com', 'https://taskflow-rnlr.onrender.com'], // permití ambos orígenes
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
