@@ -3,7 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const usuariosRoutes = require('./app/routes/usuarios');
+const usuarioRoutes = require('./app/routes/usuario');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,7 +21,7 @@ app.use(express.static('public'));
 
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
-app.use('/usuarios', usuariosRoutes);
+app.use('/usuarios', usuarioRoutes);
 
 // Iniciar servidor
 app.listen(port, () => {
