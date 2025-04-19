@@ -23,15 +23,14 @@ router.post('/', async (req, res) => {
   const { nombre, email, contrasena, rol, fecha } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(contrasena, 10);
-    const query = `
-      INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion")
-      VALUES ($1, $2, $3, $4, $5) RETURNING *;
-    `;
+    const query = 
+      'INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion") ' +
+      'VALUES ($1, $2, $3, $4, $5) RETURNING *';
     const valores = [nombre, email, hashedPassword, rol, fecha];
     const resultado = await pool.query(query, valores);
 
     await transporter.sendMail({
-      from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
+      from: `TaskFlow App <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '¡Registro exitoso!',
       text: `Hola ${nombre}, te registraste correctamente como ${rol}.`
@@ -47,26 +46,21 @@ router.post('/', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
-  console.log('Intentando login con:', email, contrasena);
-  console.log('Contraseña enviada:', JSON.stringify(contrasena));
-
+  console.log('Intentando login con:', email);
 
   try {
-    const resultado = await pool.query(`SELECT * FROM "Usuario" WHERE "Email" = $1`, [email]);
+    const resultado = await pool.query(
+      'SELECT * FROM "Usuario" WHERE "Email" = $1',
+      [email]
+    );
     const usuario = resultado.rows[0];
     console.log('Usuario encontrado en BD:', usuario);
 
     if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
 
-    const esValida = await bcrypt.compare(contrasena.trim(), usuario['Contraseña']);
+    const esValida = await bcrypt.compare(contrasena, usuario['Contraseña']);
+    if (!esValida) return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
 
-    console.log('Hashed guardada:', usuario['Contraseña']);
-    console.log('Comparando contra:', contrasena);
-
-    if (!esValida) {
-      console.log('Contraseña no coincide');
-      return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
-    }
     const token = jwt.sign(
       { id: usuario.Usuario_ID, email: usuario.Email, rol: usuario.Rol },
       JWT_SECRET,
