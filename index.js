@@ -200,4 +200,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.listen(port=3000)
+app.listen(port, () => {
+  console.log("Servidor corriendo en http://localhost:${port} o en producción");
+});
