@@ -24,23 +24,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-//Funcion para verificar el ,token
-function verificarToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) return res.status(401).json({ mensaje: 'Token faltante' });
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ mensaje: 'Token inválido o expirado' });
-
-    req.user = user;
-    next();
-  });
-}
-
-
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -70,6 +53,22 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
+
+//Funcion para verificar el ,token
+function verificarToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ mensaje: 'Token faltante' });
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ mensaje: 'Token inválido o expirado' });
+
+    req.user = user;
+    next();
+  });
+}
+
 
 app.get('/', (req, res) => {
   res.send('API de TaskFlow funcionando 🚀');
@@ -242,4 +241,9 @@ app.post('/login', async (req, res) => {
 
 app.listen(port, () => {
   console.log("Servidor corriendo en http://localhost:${port} o en producción");
+});
+
+app.use((req, res, next) => {
+  console.log('Origen de la petición:', req.headers.origin);
+  next();
 });
