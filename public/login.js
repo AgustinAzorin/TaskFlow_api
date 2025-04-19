@@ -4,7 +4,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const email = document.getElementById('loginEmail').value;
     const contrasena = document.getElementById('loginPassword').value;
   
-    fetch('https://taskflow-rnlr.onrender.com/login', {
+    fetch('https://taskflow-rnlr.onrender.com/usuarios/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
