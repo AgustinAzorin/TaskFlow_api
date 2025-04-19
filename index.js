@@ -200,15 +200,27 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
     }
 
-    // ¡Todo ok!
+    // Generar token
+    const token = jwt.sign(
+      {
+        id: usuario.Usuario_ID,
+        email: usuario.Email,
+        rol: usuario.Rol
+      },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Enviar respuesta
     res.status(200).json({
       success: true,
       mensaje: 'Inicio de sesión exitoso',
+      token,
       usuario: {
         id: usuario.Usuario_ID,
         nombre: usuario.Usuario_Nombre,
         email: usuario.Email,
-        rol: usuario.Rol,
+        rol: usuario.Rol
       }
     });
 
@@ -216,27 +228,6 @@ app.post('/login', async (req, res) => {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
-  const token = jwt.sign(
-    {
-      id: usuario.Usuario_ID,
-      email: usuario.Email,
-      rol: usuario.Rol
-    },
-    JWT_SECRET,
-    { expiresIn: '1h' } // 1 hora de duración
-  );
-  
-  res.status(200).json({
-    success: true,
-    mensaje: 'Inicio de sesión exitoso',
-    token, // <- lo devolvés al cliente
-    usuario: {
-      id: usuario.Usuario_ID,
-      nombre: usuario.Usuario_Nombre,
-      email: usuario.Email,
-      rol: usuario.Rol
-    }
-  });
 });
 
 app.listen(port, () => {
