@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const pool = require('../db');
-const transporter = require('../mailer');
+const pool = require('./app/utils/db');
+const transporter = require('./app/utils/mailer');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 const JWT_SECRET = process.env.JWT_SECRET;
 
