@@ -47,10 +47,15 @@ router.post('/', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
+  console.log('Intentando login con:', email, contrasena);
+  alert('Intentando login con:', email, contrasena);
+
 
   try {
     const resultado = await pool.query(`SELECT * FROM "Usuario" WHERE "Email" = $1`, [email]);
     const usuario = resultado.rows[0];
+    console.log('Usuario encontrado en BD:', usuario);
+    alert('Usuario encontrado en BD:', usuario);
 
     if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
 
