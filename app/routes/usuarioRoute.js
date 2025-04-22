@@ -30,12 +30,11 @@ router.post('/', async (req, res) => {
     const resultado = await pool.query(query, valores);
 
     await transporter.sendMail({
-      from: `TaskFlow App <${process.env.EMAIL_USER}>`,
+      from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '¡Registro exitoso!',
       text: `Hola ${nombre}, te registraste correctamente como ${rol}.`
     });
-
     res.status(201).json(resultado.rows[0]);
   } catch (err) {
     console.error('Error al insertar usuario:', err.message);
