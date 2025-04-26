@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proyectos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </header>
+
+  <h1>Proyectos</h1>
+
+  <table>
+    <thead>
+      <tr id="tableHeaders"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <h2>Agregar nuevo proyecto</h2>
+  <form id="proyectoForm">
+    <input type="text" id="nombre" placeholder="Nombre del Proyecto" required>
+    <input type="text" id="descripcion" placeholder="Descripción" required>
+    <button type="submit">Crear Proyecto</button>
+  </form>
+
+  <script src="proyectoRoute.js"></script>
+</body>
+</html>
