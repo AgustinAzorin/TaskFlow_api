@@ -60,7 +60,7 @@ document.getElementById('usuarioForm').addEventListener('submit', function (e) {
     fecha: document.getElementById('fecha').value
   };
 
-  fetch('https://taskflow-rnlr.onrender.com', {
+  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
