@@ -11,7 +11,7 @@ function cargarUsuarios() {
     return;
   }
 
-  fetch('https://taskflow-rnlr.onrender.com', {
+  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
   .then(response => response.json())
