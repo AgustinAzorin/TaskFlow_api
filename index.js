@@ -13,7 +13,8 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'https://taskflow-api-a3ur.onrender.com',
-    'https://taskflow-rnlr.onrender.com'
+    'https://taskflow-rnlr.onrender.com',
+    'https://taskflow-rnlr.onrender.com/usuarios'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
