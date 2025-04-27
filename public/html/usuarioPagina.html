@@ -2,24 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel Administrador</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Inicio - Usuario</title>
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
   <header>
     <button id="logoutBtn">Cerrar sesión</button>
   </header>
 
-  <h1>Panel de Administración</h1>
+  <h1>Bienvenido a TaskFlow</h1>
   <ul>
-    <li><a href="index.html">Usuarios</a></li>
-    <li><a href="proyectosPagina.html">Proyectos</a></li>
-    <li><a href="#">Tareas</a></li>
+    <li><a href="#">Mis Proyectos</a></li>
+    <li><a href="#">Mis Tareas</a></li>
   </ul>
 
   <script>
     const usuario = JSON.parse(localStorage.getItem('usuario'));
-    if (!usuario || usuario.rol !== 'admin') {
+    if (!usuario || usuario.rol === 'admin') {
       alert('Acceso restringido');
       window.location.href = 'login.html';
     }

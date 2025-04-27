@@ -1,15 +1,11 @@
-const usuario = JSON.parse(localStorage.getItem('usuario'));
-if (!usuario) {
-  window.location.href = 'login.html';
-}
+document.addEventListener('DOMContentLoaded', () => {
+  validarSesion('admin');  // Solo admins
+  configurarLogout();
+  cargarUsuarios();
+});
 
 function cargarUsuarios() {
   const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Debes iniciar sesión primero');
-    window.location.href = 'login.html';
-    return;
-  }
 
   fetch('https://taskflow-rnlr.onrender.com/usuarios', {
     headers: { 'Authorization': 'Bearer ' + token }
@@ -27,6 +23,7 @@ function cargarUsuarios() {
         th.textContent = key;
         tableHeaders.appendChild(th);
       });
+
       data.forEach(usuario => {
         const tr = document.createElement('tr');
         Object.values(usuario).forEach(value => {
@@ -45,13 +42,12 @@ function cargarUsuarios() {
       tableBody.appendChild(tr);
     }
   })
-  .catch(error => console.error('Error al obtener los usuarios:', error));
+  .catch(error => console.error('Error al obtener usuarios:', error));
 }
-// Cargar usuarios al inicio
-cargarUsuarios();
 
 document.getElementById('usuarioForm').addEventListener('submit', function (e) {
   e.preventDefault();
+
   const nuevoUsuario = {
     nombre: document.getElementById('nombre').value,
     email: document.getElementById('email').value,
@@ -68,26 +64,11 @@ document.getElementById('usuarioForm').addEventListener('submit', function (e) {
     },
     body: JSON.stringify(nuevoUsuario)
   })
-  .then(async res => {
-    if (!res.ok) {
-      const texto = await res.text();
-      throw new Error(texto);
-    }
-    return res.json();
-  })
-  .then(data => {
+  .then(res => res.json())
+  .then(() => {
     alert('Usuario agregado');
     cargarUsuarios();
     document.getElementById('usuarioForm').reset();
   })
-  .catch(error => {
-    alert('Error al agregar usuario: ' + error.message);
-    console.error('Error al agregar usuario:', error);
-  });
-});
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('usuario');
-  localStorage.removeItem('token');
-  window.location.href = 'login.html';
+  .catch(error => alert('Error: ' + error.message));
 });
