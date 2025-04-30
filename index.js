@@ -25,19 +25,18 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
+// Servir archivos CSS
 app.use('/public/css', express.static(path.join(__dirname, 'public/css'), {
   setHeaders: (res, filePath) => {
-      if (path.extname(filePath) === '.css') {
-          res.setHeader('Content-Type', 'text/css'); // Seleccona el tipo correcto delectura de archivos .css
-      }
+    res.setHeader('Content-Type', 'text/css');
   }
 }));
+
+// Servir archivos JS
 app.use('/public/js', express.static(path.join(__dirname, 'public/js'), {
   setHeaders: (res, filePath) => {
-    if (path.extname(filePath) === '.js') {
-      res.setHeader('Content-Type', 'application/javascript'); // Set correct MIME type for JavaScript files
-    }
-  },
+    res.setHeader('Content-Type', 'application/javascript');
+  }
 }));
 
 // Rutas
