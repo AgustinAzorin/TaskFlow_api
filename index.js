@@ -25,17 +25,20 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/public', express.static(path.join(__dirname, 'public'), {
+app.use('/public/css', express.static(path.join(__dirname, 'public/css'), {
   setHeaders: (res, filePath) => {
-    const ext = path.extname(filePath);
-    if (ext === '.css') {
-      res.setHeader('Content-Type', 'text/css');
-    } else if (ext === '.js') {
-      res.setHeader('Content-Type', 'application/javascript');
-    }
+      if (path.extname(filePath) === '.css') {
+          res.setHeader('Content-Type', 'text/css'); // Seleccona el tipo correcto delectura de archivos .css
+      }
   }
 }));
-
+app.use('/public/js', express.static(path.join(__dirname, 'public/js'), {
+  setHeaders: (res, filePath) => {
+    if (path.extname(filePath) === '.js') {
+      res.setHeader('Content-Type', 'application/javascript'); // Set correct MIME type for JavaScript files
+    }
+  },
+}));
 
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
