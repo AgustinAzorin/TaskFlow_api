@@ -23,6 +23,20 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/public', express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+      if (path.extname(filePath) === '.css') {
+          res.setHeader('Content-Type', 'text/css'); // Seleccona el tipo correcto delectura de archivos .css
+      }
+  }
+}));
+app.use('/public', express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (path.extname(filePath) === '.js') {
+      res.setHeader('Content-Type', 'application/javascript'); // Set correct MIME type for JavaScript files
+    }
+  },
+}));
 
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
