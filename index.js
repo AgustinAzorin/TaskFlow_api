@@ -4,6 +4,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const usuarioRoutes = require('./app/routes/usuarioRoute');
+const path = require('path');
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,18 +27,15 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use('/public', express.static(path.join(__dirname, 'public'), {
   setHeaders: (res, filePath) => {
-      if (path.extname(filePath) === '.css') {
-          res.setHeader('Content-Type', 'text/css'); // Seleccona el tipo correcto delectura de archivos .css
-      }
+    const ext = path.extname(filePath);
+    if (ext === '.css') {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (ext === '.js') {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
   }
 }));
-app.use('/public', express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, filePath) => {
-    if (path.extname(filePath) === '.js') {
-      res.setHeader('Content-Type', 'application/javascript'); // Set correct MIME type for JavaScript files
-    }
-  },
-}));
+
 
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
