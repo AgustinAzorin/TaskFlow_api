@@ -12,7 +12,7 @@
 
   <h1>Panel de Administración</h1>
   <ul>
-    <li><a href="index.html">Usuarios</a></li>
+    <li><a href="usuariosPagina.html">Usuarios</a></li>
     <li><a href="proyectosPagina.html">Proyectos</a></li>
     <li><a href="#">Tareas</a></li>
   </ul>
@@ -21,13 +21,13 @@
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     if (!usuario || usuario.rol !== 'admin') {
       alert('Acceso restringido');
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     }
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('token');
       localStorage.removeItem('usuario');
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     });
   </script>
 </body>
