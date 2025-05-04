@@ -15,9 +15,9 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         const rol = data.usuario.rol;
         if (rol === 'admin') {
-          window.location.href = 'index/adminPagina.html';
+          window.location.href = 'html/adminPagina.html';
         } else {
-          window.location.href = 'index/usuarioPagina.html';
+          window.location.href = 'html/usuarioPagina.html';
         }
       } else {
         alert(data.mensaje || 'Error en el login');
