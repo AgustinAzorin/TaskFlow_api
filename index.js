@@ -25,20 +25,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.static('public'));
-// Servir archivos CSS
-app.use('/public/css', express.static(path.join(__dirname, 'public/css'), {
-  setHeaders: (res, filePath) => {
-    res.setHeader('Content-Type', 'text/css');
-  }
-}));
-
-// Servir archivos JS
-app.use('/public/js', express.static(path.join(__dirname, 'public/js'), {
-  setHeaders: (res, filePath) => {
-    res.setHeader('Content-Type', 'application/javascript');
-  }
-}));
-
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
 app.use('/usuarios', usuarioRoutes);
