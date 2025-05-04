@@ -4,12 +4,12 @@ function validarSesion(rolRequerido = null) {
   
     if (!usuario || !token) {
       alert('Debes iniciar sesión');
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     }
   
     if (rolRequerido && usuario.rol !== rolRequerido) {
       alert('Acceso restringido');
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     }
   }
   
@@ -19,7 +19,7 @@ function validarSesion(rolRequerido = null) {
       btnLogout.addEventListener('click', () => {
         localStorage.removeItem('token');
         localStorage.removeItem('usuario');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
       });
     }
   }
