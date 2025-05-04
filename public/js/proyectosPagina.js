@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   validarSesion();
   configurarLogout();
+  cargarUsuariosEnSelect();
   cargarProyectos();
 });
+
 
 let modoEdicion = false;
 let proyectoEditandoId = null;
@@ -83,6 +85,27 @@ function resetFormulario() {
   document.getElementById('submitBtn').textContent = 'Crear Proyecto';
   modoEdicion = false;
   proyectoEditandoId = null;
+}
+
+function cargarUsuariosEnSelect() {
+  const token = localStorage.getItem('token');
+
+  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(res => res.json())
+  .then(usuarios => {
+    const select = document.getElementById('usuario_id');
+    select.innerHTML = '<option value="">Seleccionar usuario</option>'; // limpiar
+
+    usuarios.forEach(usuario => {
+      const option = document.createElement('option');
+      option.value = usuario.Usuario_ID;
+      option.textContent = `${usuario.Usuario_Nombre} (${usuario.Email})`;
+      select.appendChild(option);
+    });
+  })
+  .catch(err => console.error('Error al cargar usuarios:', err));
 }
 
 document.getElementById('proyectoForm').addEventListener('submit', function (e) {

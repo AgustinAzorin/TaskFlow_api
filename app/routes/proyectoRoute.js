@@ -18,26 +18,21 @@ router.get('/', verificarToken, async (req, res) => {
 
 // Crear un nuevo proyecto
 router.post('/', verificarToken, autorizacionPorRol(['admin']), async (req, res) => {
-  const { nombre, descripcion } = req.body;
-  const usuarioID = req.usuario.id;
-
-  if (!nombre || !descripcion) {
-    return res.status(400).json({ mensaje: 'Nombre y descripción son obligatorios' });
-  }
+  const { nombre, descripcion, usuario_id } = req.body;
 
   try {
     const query = `
       INSERT INTO "Proyecto" ("Proyecto_Nombre", "Proyecto_Descripcion", "Usuario_ID")
       VALUES ($1, $2, $3)
       RETURNING *`;
-
-    const valores = [nombre, descripcion, usuarioID];
-
+    
+    const valores = [nombre, descripcion, usuario_id];
     const resultado = await pool.query(query, valores);
+
     res.status(201).json(resultado.rows[0]);
   } catch (err) {
     console.error('Error al crear proyecto:', err.message);
-    res.status(500).json({ mensaje: 'Error al crear proyecto', error: err.message });
+    res.status(500).send('Error al crear proyecto: ' + err.message);
   }
 });
 

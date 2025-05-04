@@ -21,10 +21,16 @@
 
   <h2>Agregar nuevo proyecto</h2>
   <form id="proyectoForm">
-    <input type="text" id="nombre" placeholder="Nombre del Proyecto" required>
-    <input type="text" id="descripcion" placeholder="Descripción" required>
+    <input type="text" id="nombre" placeholder="Nombre del proyecto" required>
+    <textarea id="descripcion" placeholder="Descripción"></textarea>
+  
+    <select id="usuario_id" required>
+      <option value="">Seleccionar usuario</option>
+    </select>
+  
     <button type="submit" id="submitBtn">Crear Proyecto</button>
   </form>
+  
 
   <script src="/js/authFrontEnd.js"></script>
   <script src="/js/proyectosPagina.js"></script>
