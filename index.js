@@ -5,6 +5,9 @@ const express = require('express');
 const cors = require('cors');
 const usuarioRoutes = require('./app/routes/usuarioRoute');
 const path = require('path');
+const proyectoRoutes = require('./routes/proyectoRoute');
+
+
 
 
 const app = express();
@@ -28,6 +31,7 @@ app.use(express.static('public'));
 // Rutas
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
 app.use('/usuarios', usuarioRoutes);
+app.use('/proyectos', proyectoRoutes);
 
 // Iniciar servidor
 app.listen(port, () => {
