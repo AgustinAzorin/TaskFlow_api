@@ -9,6 +9,26 @@ document.addEventListener('DOMContentLoaded', () => {
 let modoEdicion = false;
 let proyectoEditandoId = null;
 
+function cargarUsuariosEnSelect() {
+  const token = localStorage.getItem('token');
+
+  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(res => res.json())
+  .then(usuarios => {
+    const select = document.getElementById('usuarios_ids'); // Asegúrate de que el ID es correcto aquí
+    select.innerHTML = ''; // Limpiar el select
+    usuarios.forEach(usuario => {
+      const option = document.createElement('option');
+      option.value = usuario.Usuario_ID;
+      option.textContent = usuario.Usuario_Nombre;
+      select.appendChild(option);
+    });
+  })
+  .catch(err => console.error('Error al cargar usuarios:', err));
+}
+
 function cargarOpcionesUsuarios() {
   const token = localStorage.getItem('token');
   fetch('https://taskflow-rnlr.onrender.com/usuarios', {
@@ -16,7 +36,7 @@ function cargarOpcionesUsuarios() {
   })
   .then(res => res.json())
   .then(usuarios => {
-    const select = document.getElementById('usuarios_ids'); // Asegúrate de que el ID es correcto aquí
+    const select = document.getElementById('usuarios_ids');
     select.innerHTML = '';
     usuarios.forEach(usuario => {
       const option = document.createElement('option');
