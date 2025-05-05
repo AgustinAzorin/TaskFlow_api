@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarOpcionesUsuarios(); 
 });
 
-
 let modoEdicion = false;
 let proyectoEditandoId = null;
 
@@ -17,7 +16,7 @@ function cargarOpcionesUsuarios() {
   })
   .then(res => res.json())
   .then(usuarios => {
-    const select = document.getElementById('usuarios_ids');
+    const select = document.getElementById('usuarios_ids'); // Asegúrate de que el ID es correcto aquí
     select.innerHTML = '';
     usuarios.forEach(usuario => {
       const option = document.createElement('option');
@@ -28,7 +27,6 @@ function cargarOpcionesUsuarios() {
   })
   .catch(err => console.error('Error al cargar usuarios:', err));
 }
-
 
 function cargarProyectos() {
   const token = localStorage.getItem('token');
@@ -117,7 +115,6 @@ function editarProyecto(proyecto) {
   .catch(err => console.error('Error al obtener usuarios asignados:', err));
 }
 
-
 function resetFormulario() {
   document.getElementById('proyectoForm').reset();
   document.getElementById('submitBtn').textContent = 'Crear Proyecto';
@@ -125,33 +122,12 @@ function resetFormulario() {
   proyectoEditandoId = null;
 }
 
-function cargarUsuariosEnSelect() {
-  const token = localStorage.getItem('token');
-
-  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(res => res.json())
-  .then(usuarios => {
-    const select = document.getElementById('usuario_id');
-    select.innerHTML = '<option value="">Seleccionar usuario</option>'; // limpiar
-
-    usuarios.forEach(usuario => {
-      const option = document.createElement('option');
-      option.value = usuario.Usuario_ID;
-      option.textContent = `${usuario.Usuario_Nombre} (${usuario.Email})`;
-      select.appendChild(option);
-    });
-  })
-  .catch(err => console.error('Error al cargar usuarios:', err));
-}
-
 document.getElementById('proyectoForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
   const nombre = document.getElementById('nombre').value;
   const descripcion = document.getElementById('descripcion').value;
-  const usuariosSeleccionados = Array.from(document.getElementById('usuarios').selectedOptions)
+  const usuariosSeleccionados = Array.from(document.getElementById('usuarios_ids').selectedOptions)
     .map(option => option.value);
   
   const token = localStorage.getItem('token');
@@ -187,8 +163,6 @@ document.getElementById('proyectoForm').addEventListener('submit', function (e) 
     .catch(error => alert('Error: ' + error.message));
   }
 });
-
-
 
 function eliminarProyecto(id) {
   if (confirm('¿Eliminar este proyecto?')) {
