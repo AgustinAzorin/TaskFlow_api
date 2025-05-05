@@ -18,23 +18,40 @@ router.get('/', verificarToken, async (req, res) => {
 
 // Crear un nuevo proyecto
 router.post('/', verificarToken, autorizacionPorRol(['admin']), async (req, res) => {
-  const { nombre, descripcion, usuario_id } = req.body;
-
+  const { nombre, descripcion, usuariosSeleccionados } = req.body;
+  const usuarioID = req.usuario.id; // Tomamos el id del usuario logueado
+  
   try {
-    const query = `
+    // Crear el proyecto
+    const queryProyecto = `
       INSERT INTO "Proyecto" ("Proyecto_Nombre", "Proyecto_Descripcion", "Usuario_ID")
       VALUES ($1, $2, $3)
       RETURNING *`;
     
-    const valores = [nombre, descripcion, usuario_id];
-    const resultado = await pool.query(query, valores);
+    const valoresProyecto = [nombre, descripcion, usuarioID];
+    
+    const resultadoProyecto = await pool.query(queryProyecto, valoresProyecto);
+    const proyectoCreado = resultadoProyecto.rows[0];
 
-    res.status(201).json(resultado.rows[0]);
+    // Insertar los usuarios seleccionados en la tabla intermedia "ProyectoUsuario"
+    if (usuariosSeleccionados && usuariosSeleccionados.length > 0) {
+      const queryRelacion = `
+        INSERT INTO "ProyectoUsuario" ("Usuario_ID", "Proyecto_ID")
+        VALUES
+        ${usuariosSeleccionados.map((usuarioId, index) => `(${
+          usuarioId
+        }, ${proyectoCreado.Proyecto_ID})`).join(', ')}`;
+      
+      await pool.query(queryRelacion);
+    }
+
+    res.status(201).json(proyectoCreado);
   } catch (err) {
     console.error('Error al crear proyecto:', err.message);
     res.status(500).send('Error al crear proyecto: ' + err.message);
   }
 });
+
 
 // Actualizar un proyecto
 router.put('/:id', verificarToken, autorizacionPorRol(['admin']), async (req, res) => {
