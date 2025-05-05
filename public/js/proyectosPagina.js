@@ -169,6 +169,7 @@ document.getElementById('proyectoForm').addEventListener('submit', function (e) 
     })
     .catch(error => alert('Error: ' + error.message));
   } else {
+    console.log(token)
     fetch('https://taskflow-rnlr.onrender.com/proyectos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
