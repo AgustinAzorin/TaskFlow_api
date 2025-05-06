@@ -11,9 +11,9 @@ function validarSesion(rolRequerido = null) {
       alert('Acceso restringido');
       window.location.href = 'public/index.html';
     }
-  }
-  
-  function configurarLogout() {
+}
+
+function configurarLogout() {
     const btnLogout = document.getElementById('logoutBtn');
     if (btnLogout) {
       btnLogout.addEventListener('click', () => {
@@ -22,5 +22,20 @@ function validarSesion(rolRequerido = null) {
         window.location.href = 'public/index.html';
       });
     }
-  }
-  
+}
+
+function obtenerRolDesdeToken() {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  const payloadBase64 = token.split('.')[1];
+  const payloadJson = atob(payloadBase64);
+  const payload = JSON.parse(payloadJson);
+
+  return payload.rol;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const rol = obtenerRolDesdeToken();
+  console.log("Rol del usuario:", rol);
+});
