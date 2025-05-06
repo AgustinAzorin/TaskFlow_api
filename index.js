@@ -6,8 +6,8 @@ const cors = require('cors');
 const usuarioRoutes = require('./app/routes/usuarioRoute');
 const path = require('path');
 const proyectoRoutes = require('./app/routes/proyectoRoute');
-const authMiddleware = require('./app/middlewares/auth');
-const { autorizacionPorRol } = require('./app/middlewares/auth'); // ⬅️ añadimos esto
+const { verificarToken, autorizacionPorRol } = require('./app/middlewares/auth');
+
 
 
 
@@ -34,8 +34,6 @@ app.use(express.static('public'));
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
 app.use('/usuarios', usuarioRoutes);
 app.use('/proyectos', proyectoRoutes);
-app.use('/proyectos', authMiddleware, autorizacionPorRol('admin'), require('./app/routes/proyectoRoute'));
-app.use('/tareas', authMiddleware, autorizacionPorRol('admin', 'user'), require('./app/routes/tareaRoute'));
 
 // Iniciar servidor
 app.listen(port, () => {

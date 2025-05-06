@@ -19,7 +19,8 @@ router.get('/', verificarToken, async (req, res) => {
 // Crear un nuevo proyecto
 router.post('/', verificarToken, autorizacionPorRol(['admin']), async (req, res) => {
   const { nombre, descripcion, usuariosSeleccionados } = req.body;
-  const usuarioID = req.usuario.id; // Tomamos el id del usuario logueado
+  const usuarioID = req.user.id;
+
   
   try {
     // Crear el proyecto
@@ -35,15 +36,19 @@ router.post('/', verificarToken, autorizacionPorRol(['admin']), async (req, res)
 
     // Insertar los usuarios seleccionados en la tabla intermedia "ProyectoUsuario"
     if (usuariosSeleccionados && usuariosSeleccionados.length > 0) {
+      const valoresRelacion = [];
+      const placeholders = usuariosSeleccionados.map((usuarioId, index) => {
+        valoresRelacion.push(usuarioId, proyectoCreado.Proyecto_ID);
+        return `($${index * 2 + 1}, $${index * 2 + 2})`;
+      }).join(', ');
+    
       const queryRelacion = `
         INSERT INTO "ProyectoUsuario" ("Usuario_ID", "Proyecto_ID")
-        VALUES
-        ${usuariosSeleccionados.map((usuarioId, index) => `(${
-          usuarioId
-        }, ${proyectoCreado.Proyecto_ID})`).join(', ')}`;
-      
-      await pool.query(queryRelacion);
+        VALUES ${placeholders}`;
+    
+      await pool.query(queryRelacion, valoresRelacion);
     }
+    
 
     res.status(201).json(proyectoCreado);
   } catch (err) {
