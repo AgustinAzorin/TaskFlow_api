@@ -1,35 +1,46 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
+/**
+ * Middleware de autenticación.
+ * Verifica que el token esté presente y sea válido.
+ */
+module.exports = function (req, res, next) {
+  try {
+    const authHeader = req.headers['authorization'];
 
-function verificarToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ mensaje: 'Token faltante' });
+    if (!authHeader) {
+      return res.status(403).json({ mensaje: 'Token no proporcionado' });
+    }
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ mensaje: 'Token inválido o expirado' });
-    req.user = user;
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(403).json({ mensaje: 'Token mal formado' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+
+    console.log("✅ Token verificado:", decoded); // Mostramos datos del token
+
     next();
-  });
-}
+  } catch (err) {
+    console.error("❌ Error al verificar token:", err.message);
+    return res.status(401).json({ mensaje: 'Token inválido' });
+  }
+};
 
-function autorizacionPorRol(...roles) {
+/**
+ * Middleware de autorización por rol.
+ * Se utiliza después del middleware de autenticación.
+ */
+module.exports.autorizacionPorRol = function (...roles) {
   return (req, res, next) => {
-    if (!roles.includes(req.user.rol)) {
+    if (!req.user || !roles.includes(req.user.rol)) {
+      console.warn(`❌ Rol no autorizado: ${req.user?.rol}`);
       return res.status(403).json({ mensaje: 'Acceso denegado' });
     }
+
+    console.log(`✅ Acceso permitido para rol: ${req.user.rol}`);
     next();
-    console.log("Rol recibido:", req.user.rol);
-  };  
-}
-
-try {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log("Contenido del token decodificado:", decoded); 
-  req.user = decoded;
-  next();
-} catch (err) {
-  res.status(401).json({ mensaje: 'Token inválido' });
-}
-
-module.exports = { verificarToken, autorizacionPorRol };
+  };
+};
