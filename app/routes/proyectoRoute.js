@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../utils/db');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
+const transporter = require('../utils/mailer');
+
 
 // Obtener todos los proyectos
 router.get('/', verificarToken, async (req, res) => {
@@ -35,14 +37,32 @@ router.post('/', verificarToken, autorizacionPorRol('admin'), async (req, res) =
     const resultado = await cliente.query(queryProyecto, valores);
     const proyectoCreado = resultado.rows[0];
 
-    // 2. Insertar en ProyectoUsuario si hay integrantes
-    if (Array.isArray(integrantes) && integrantes.length > 0) {
-      const insertQuery = `
-        INSERT INTO "ProyectoUsuario" ("Usuario_ID", "Proyecto_ID")
-        VALUES ${integrantes.map((_, i) => `($${i + 1}, ${proyectoCreado.Proyecto_ID})`).join(',')}
-      `;
-      await cliente.query(insertQuery, integrantes);
-    }
+      // 2. Insertar en ProyectoUsuario si hay integrantes
+        if (Array.isArray(integrantes) && integrantes.length > 0) {
+          const insertQuery = `
+            INSERT INTO "ProyectoUsuario" ("Usuario_ID", "Proyecto_ID")
+            VALUES ${integrantes.map((_, i) => `($${i + 1}, ${proyectoCreado.Proyecto_ID})`).join(',')}
+          `;
+          await cliente.query(insertQuery, integrantes);
+    
+          // 3. Obtener datos de los usuarios para enviarles el mail
+          const usuariosQuery = `
+            SELECT "Usuario_Nombre", "Email"
+            FROM "Usuario"
+            WHERE "Usuario_ID" = ANY($1::int[])
+          `;
+          const resultadoUsuarios = await cliente.query(usuariosQuery, [integrantes]);
+    
+          for (const usuario of resultadoUsuarios.rows) {
+            await transporter.sendMail({
+              from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
+              to: usuario.Email,
+              subject: 'Nuevo proyecto asignado',
+              text: `Hola ${usuario.Usuario_Nombre}, se te ha incluido en el proyecto "${proyectoCreado.Proyecto_Nombre}".`
+            });
+          }
+        }  
+    
 
     await cliente.query('COMMIT');
     res.status(201).json(proyectoCreado);
