@@ -19,7 +19,17 @@ function autorizacionPorRol(...roles) {
       return res.status(403).json({ mensaje: 'Acceso denegado' });
     }
     next();
-  };
+    console.log("Rol recibido:", req.user.rol);
+  };  
+}
+
+try {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log("Contenido del token decodificado:", decoded); 
+  req.user = decoded;
+  next();
+} catch (err) {
+  res.status(401).json({ mensaje: 'Token inválido' });
 }
 
 module.exports = { verificarToken, autorizacionPorRol };
