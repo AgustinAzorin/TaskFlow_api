@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       div.innerHTML = `
         <h3>${p.Proyecto_Nombre}</h3>
         <p>${p.Proyecto_Descripcion || 'Sin descripción'}</p>
-        <small>Creado por Usuario ID: ${p.Usuario_ID}</small>
+        <small>Creado por: ${p.Usuario_Nombre}</small>
       `;
 
       contenedorProyectos.appendChild(div);
