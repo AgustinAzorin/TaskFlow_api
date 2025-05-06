@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Proyectos</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Proyectos</title>
 </head>
 <body>
-  <header>
-    <button id="logoutBtn">Cerrar sesión</button>
-  </header>
+  <h1>Panel de Proyectos - Admin</h1>
 
-  <h1>Proyectos</h1>
+  <button id="logoutBtn">Cerrar sesión</button>
 
-  <table>
-    <thead>
-      <tr id="tableHeaders"></tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+  <section>
+    <h2>Crear nuevo proyecto</h2>
+    <form id="formCrearProyecto">
+      <label for="nombre">Nombre del Proyecto:</label>
+      <input type="text" id="nombre" name="nombre" required />
 
-  <h2>Agregar nuevo proyecto</h2>
-  <form id="proyectoForm">
-    <input type="text" id="nombre" placeholder="Nombre del proyecto" required>
-    <textarea id="descripcion" placeholder="Descripción"></textarea>
-  
-    <label for="usuarios_ids">Asignar usuarios:</label>
-    <select id="usuarios_ids" multiple required>
-      <option value="">Seleccionar usuario</option>
-    </select>
-  
-    <button type="submit" id="submitBtn">Crear Proyecto</button>
-  </form>
-  
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" name="descripcion"></textarea>
 
-  <script src="/js/authFrontEnd.js"></script>
-  <script src="/js/proyectosPagina.js"></script>
+      <button type="submit">Crear Proyecto</button>
+    </form>
+  </section>
 
+  <section>
+    <h2>Lista de Proyectos</h2>
+    <button id="btnCargarProyectos">Cargar Proyectos</button>
+    <div id="contenedorProyectos">
+      <!-- Aquí se insertarán los proyectos dinámicamente -->
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="../js/authFrontEnd.js"></script>
+  <script src="../js/proyectosPagina.js"></script>
 </body>
 </html>

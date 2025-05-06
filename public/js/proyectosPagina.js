@@ -1,203 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
-  validarSesion();
+  validarSesion('admin');
   configurarLogout();
-  cargarUsuariosEnSelect();
-  cargarProyectos();
-  cargarOpcionesUsuarios(); 
-});
 
-let modoEdicion = false;
-let proyectoEditandoId = null;
-
-function cargarUsuariosEnSelect() {
   const token = localStorage.getItem('token');
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const contenedorProyectos = document.getElementById('contenedorProyectos');
+  const formCrear = document.getElementById('formCrearProyecto');
+  const btnCargar = document.getElementById('btnCargarProyectos');
 
-  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(res => res.json())
-  .then(usuarios => {
-    const select = document.getElementById('usuarios_ids'); // Asegúrate de que el ID es correcto aquí
-    select.innerHTML = ''; // Limpiar el select
-    usuarios.forEach(usuario => {
-      const option = document.createElement('option');
-      option.value = usuario.Usuario_ID;
-      option.textContent = usuario.Usuario_Nombre;
-      select.appendChild(option);
-    });
-  })
-  .catch(err => console.error('Error al cargar usuarios:', err));
-}
-
-function cargarOpcionesUsuarios() {
-  const token = localStorage.getItem('token');
-  fetch('https://taskflow-rnlr.onrender.com/usuarios', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(res => res.json())
-  .then(usuarios => {
-    const select = document.getElementById('usuarios_ids');
-    select.innerHTML = '';
-    usuarios.forEach(usuario => {
-      const option = document.createElement('option');
-      option.value = usuario.Usuario_ID;
-      option.textContent = usuario.Usuario_Nombre;
-      select.appendChild(option);
-    });
-  })
-  .catch(err => console.error('Error al cargar usuarios:', err));
-}
-
-function cargarProyectos() {
-  const token = localStorage.getItem('token');
-
-  fetch('https://taskflow-rnlr.onrender.com/proyectos', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(response => response.json())
-  .then(data => {
-    const tableHeaders = document.getElementById('tableHeaders');
-    const tableBody = document.getElementById('tableBody');
-    tableHeaders.innerHTML = '';
-    tableBody.innerHTML = '';
-
-    if (data.length > 0) {
-      Object.keys(data[0]).forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key;
-        tableHeaders.appendChild(th);
+  // Cargar proyectos desde el backend
+  btnCargar.addEventListener('click', async () => {
+    try {
+      const respuesta = await fetch('https://taskflow-rnlr.onrender.com/proyectos', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      const thAcciones = document.createElement('th');
-      thAcciones.textContent = 'Acciones';
-      tableHeaders.appendChild(thAcciones);
+      if (!respuesta.ok) throw new Error('Error al obtener proyectos');
 
-      data.forEach(proyecto => {
-        const tr = document.createElement('tr');
-        Object.entries(proyecto).forEach(([key, value]) => {
-          const td = document.createElement('td');
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-
-        const accionesTd = document.createElement('td');
-
-        const editarBtn = document.createElement('button');
-        editarBtn.textContent = 'Editar';
-        editarBtn.addEventListener('click', () => editarProyecto(proyecto));
-
-        const eliminarBtn = document.createElement('button');
-        eliminarBtn.textContent = 'Eliminar';
-        eliminarBtn.addEventListener('click', () => eliminarProyecto(proyecto.Proyecto_ID));
-
-        accionesTd.appendChild(editarBtn);
-        accionesTd.appendChild(eliminarBtn);
-
-        tr.appendChild(accionesTd);
-        tableBody.appendChild(tr);
-      });
-    } else {
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = 100;
-      td.textContent = 'No hay proyectos disponibles.';
-      tr.appendChild(td);
-      tableBody.appendChild(tr);
+      const proyectos = await respuesta.json();
+      renderizarProyectos(proyectos);
+    } catch (error) {
+      console.error('❌', error.message);
+      alert('No se pudieron cargar los proyectos.');
     }
-  })
-  .catch(async (error) => {
-    const errData = await error.json();
-    alert('Error: ' + (errData.mensaje || error.message));
   });
-}
 
-function editarProyecto(proyecto) {
-  document.getElementById('nombre').value = proyecto.Proyecto_Nombre;
-  document.getElementById('descripcion').value = proyecto.Proyecto_Descripcion;
-  document.getElementById('submitBtn').textContent = 'Guardar Cambios';
-  modoEdicion = true;
-  proyectoEditandoId = proyecto.Proyecto_ID;
+  // Crear nuevo proyecto
+  formCrear.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  // Obtener usuarios asignados al proyecto
-  const token = localStorage.getItem('token');
-  fetch(`https://taskflow-rnlr.onrender.com/proyectos/${proyectoEditandoId}/usuarios`, {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(res => res.json())
-  .then(usuariosAsignados => {
-    const select = document.getElementById('usuarios_ids');
-    const idsAsignados = usuariosAsignados.map(u => u.Usuario_ID.toString());
+    const nombre = document.getElementById('nombre').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
 
-    Array.from(select.options).forEach(opt => {
-      opt.selected = idsAsignados.includes(opt.value);
+    if (!nombre) {
+      alert('El nombre del proyecto es obligatorio');
+      return;
+    }
+
+    try {
+      const respuesta = await fetch('https://taskflow-rnlr.onrender.com/proyectos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          nombre,
+          descripcion,
+          usuario_id: usuario.id
+        })
+      });
+
+      if (!respuesta.ok) throw new Error('Error al crear proyecto');
+
+      const nuevoProyecto = await respuesta.json();
+      alert('✅ Proyecto creado exitosamente');
+      formCrear.reset();
+      // Opcional: recargar lista automáticamente
+      btnCargar.click();
+    } catch (error) {
+      console.error('❌', error.message);
+      alert('Hubo un problema al crear el proyecto.');
+    }
+  });
+
+  function renderizarProyectos(lista) {
+    contenedorProyectos.innerHTML = '';
+    if (lista.length === 0) {
+      contenedorProyectos.innerHTML = '<p>No hay proyectos aún.</p>';
+      return;
+    }
+
+    lista.forEach(p => {
+      const div = document.createElement('div');
+      div.style.border = '1px solid #ccc';
+      div.style.padding = '10px';
+      div.style.margin = '10px 0';
+
+      div.innerHTML = `
+        <h3>${p.Proyecto_Nombre}</h3>
+        <p>${p.Proyecto_Descripcion || 'Sin descripción'}</p>
+        <small>Creado por Usuario ID: ${p.Usuario_ID}</small>
+      `;
+
+      contenedorProyectos.appendChild(div);
     });
-  })
-  .catch(err => console.error('Error al obtener usuarios asignados:', err));
-}
-
-function resetFormulario() {
-  document.getElementById('proyectoForm').reset();
-  document.getElementById('submitBtn').textContent = 'Crear Proyecto';
-  modoEdicion = false;
-  proyectoEditandoId = null;
-}
-
-document.getElementById('proyectoForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const nombre = document.getElementById('nombre').value;
-  const descripcion = document.getElementById('descripcion').value;
-  const usuariosSeleccionados = Array.from(document.getElementById('usuarios_ids').selectedOptions)
-    .map(option => option.value);
-  
-  const token = localStorage.getItem('token');
-
-  if (modoEdicion) {
-    fetch(`https://taskflow-rnlr.onrender.com/proyectos/${proyectoEditandoId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ nombre, descripcion, usuariosSeleccionados })
-    })
-    .then(res => res.json())
-    .then(() => {
-      alert('Proyecto actualizado');
-      cargarProyectos();
-      document.getElementById('proyectoForm').reset();
-      modoEdicion = false;
-      proyectoEditandoId = null;
-      document.getElementById('submitBtn').textContent = 'Crear Proyecto';
-    })
-    .catch(error => alert('Error: ' + error.message));
-  } else {
-    console.log(token)
-    fetch('https://taskflow-rnlr.onrender.com/proyectos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ nombre, descripcion, usuariosSeleccionados })
-    })
-    .then(res => res.json())
-    .then(() => {
-      alert('Proyecto creado');
-      cargarProyectos();
-      document.getElementById('proyectoForm').reset();
-    })
-    .catch(error => alert('Error: ' + error.message));
   }
 });
-
-function eliminarProyecto(id) {
-  if (confirm('¿Eliminar este proyecto?')) {
-    fetch(`https://taskflow-rnlr.onrender.com/proyectos/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-    })
-    .then(() => {
-      alert('Proyecto eliminado');
-      cargarProyectos();
-    })
-    .catch(async (error) => {
-      const errData = await error.json();
-      alert('Error: ' + (errData.mensaje || error.message));
-    });
-  }
-}
