@@ -1,10 +1,12 @@
+// auth.js
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
+
 /**
  * Middleware de autenticación.
  * Verifica que el token esté presente y sea válido.
  */
-module.exports = function (req, res, next) {
+function verificarToken(req, res, next) {
   try {
     const authHeader = req.headers['authorization'];
 
@@ -17,10 +19,10 @@ module.exports = function (req, res, next) {
       return res.status(403).json({ mensaje: 'Token mal formado' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
 
-    console.log("✅ Token verificado:", decoded); // Mostramos datos del token
+    console.log("✅ Token verificado:", decoded);
 
     next();
   } catch (err) {
@@ -31,9 +33,8 @@ module.exports = function (req, res, next) {
 
 /**
  * Middleware de autorización por rol.
- * Se utiliza después del middleware de autenticación.
  */
-module.exports.autorizacionPorRol = function (...roles) {
+function autorizacionPorRol(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.rol)) {
       console.warn(`❌ Rol no autorizado: ${req.user?.rol}`);
@@ -43,4 +44,10 @@ module.exports.autorizacionPorRol = function (...roles) {
     console.log(`✅ Acceso permitido para rol: ${req.user.rol}`);
     next();
   };
+}
+
+// ✅ Exportamos correctamente los dos middlewares
+module.exports = {
+  verificarToken,
+  autorizacionPorRol
 };
