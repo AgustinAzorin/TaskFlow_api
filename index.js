@@ -7,6 +7,8 @@ const usuarioRoutes = require('./app/routes/usuarioRoute');
 const path = require('path');
 const proyectoRoutes = require('./app/routes/proyectoRoute');
 const { verificarToken, autorizacionPorRol } = require('./app/middlewares/auth');
+const tareaRoutes = require('./app/routes/tareaRoute');
+
 
 
 
@@ -34,6 +36,7 @@ app.use(express.static('public'));
 app.get('/', (req, res) => res.send('API de TaskFlow funcionando 🚀'));
 app.use('/usuarios', usuarioRoutes);
 app.use('/proyectos', proyectoRoutes);
+app.use('/tareas', tareaRoutes);
 
 // Iniciar servidor
 app.listen(port, () => {
