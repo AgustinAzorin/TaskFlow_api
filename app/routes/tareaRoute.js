@@ -3,16 +3,6 @@ const router = express.Router();
 const pool = require('../utils/db');
 const transporter = require('../utils/mailer');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
-const tareaCreada = resultado.rows[0];
-
-await pool.query(`
-    INSERT INTO "Accion" ("Usuario_ID", "Accion_Descripcion", "Fecha", "Entidad_afectada")
-    VALUES ($1, $2, CURRENT_DATE, 'Tarea')
-  `, [
-    req.user.id,
-    `Asignó la tarea "${tareaCreada.Tarea_Nombre}" al usuario ID ${responsable}`
-  ]);
-  
 
 // GET /tareas
 router.get('/', verificarToken, async (req, res) => {
@@ -58,6 +48,18 @@ router.post('/', verificarToken, autorizacionPorRol('admin'), async (req, res) =
     proyecto_id,
     fecha_limite
   } = req.body;
+
+  const tareaCreada = resultado.rows[0];
+
+await pool.query(`
+    INSERT INTO "Accion" ("Usuario_ID", "Accion_Descripcion", "Fecha", "Entidad_afectada")
+    VALUES ($1, $2, CURRENT_DATE, 'Tarea')
+  `, [
+    req.user.id,
+    `Asignó la tarea "${tareaCreada.Tarea_Nombre}" al usuario ID ${responsable}`
+  ]);
+  
+
 
   if (!nombre || !responsable || !proyecto_id || !estado || !prioridad) {
     return res.status(400).json({ mensaje: 'Faltan campos obligatorios' });

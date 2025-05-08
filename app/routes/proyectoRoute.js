@@ -3,18 +3,6 @@ const router = express.Router();
 const pool = require('../utils/db');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 const transporter = require('../utils/mailer');
-const proyectoCreado = resultado.rows[0];
-
-// Registrar acción en tabla "Accion"
-await pool.query(`
-  INSERT INTO "Accion" ("Usuario_ID", "Accion_Descripcion", "Fecha", "Entidad_afectada")
-  VALUES ($1, $2, CURRENT_DATE, 'Proyecto')
-`, [
-  usuario_id,
-  `Creó el proyecto "${proyectoCreado.Proyecto_Nombre}"`
-]);
-
-
 
 // Obtener todos los proyectos
 router.get('/', verificarToken, async (req, res) => {
@@ -30,6 +18,17 @@ router.get('/', verificarToken, async (req, res) => {
 // Crear un nuevo proyecto con posibles integrantes
 router.post('/', verificarToken, autorizacionPorRol('admin'), async (req, res) => {
   const { nombre, descripcion, usuario_id, integrantes } = req.body;
+  // ya dentro del router.post
+  const proyectoCreado = resultado.rows[0];
+
+  // Registrar acción en tabla "Accion"
+  await pool.query(`
+  INSERT INTO "Accion" ("Usuario_ID", "Accion_Descripcion", "Fecha", "Entidad_afectada")
+  VALUES ($1, $2, CURRENT_DATE, 'Proyecto')
+  `, [
+  usuario_id,
+  `Creó el proyecto "${proyectoCreado.Proyecto_Nombre}"`
+  ]);
 
   if (!nombre || !usuario_id) {
     return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
