@@ -16,6 +16,14 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.10.1",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0"
   }
 }

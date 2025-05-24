@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - TaskFlow</title>
-  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/public/login.css">
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-  <div class="login-container">
-    <h1>Iniciar sesión</h1>
-    <form id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" required>
-      <input type="password" id="loginPassword" placeholder="Contraseña" required>
-      <button type="submit">Entrar</button>
-    </form>
-  </div>
+  <div id="root"></div>
 
-  <script src="/js/login.js"></script>
-  <script src="/js/authFrontEnd.js"></script>
+  <!-- Tu código React compilado por Babel en el navegador -->
+  <script type="text/babel" src="/src/Login.jsx"></script>
 </body>
 </html>
