@@ -127,6 +127,7 @@ header button#logoutBtn {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  align-items: right;
 }
 
 header button#logoutBtn:hover {
