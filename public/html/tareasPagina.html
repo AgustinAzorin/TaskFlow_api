@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Tareas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/tareas.css">
+</head>
+<body>
+  <header>
+    <button id="logoutBtn">Cerrar sesión</button>
+  </header>
+
+  <h1>Panel de Tareas</h1>
+
+  <section>
+    <button id="btnCargarTareas">Cargar Tareas</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Tarea</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+          <th>Prioridad</th>
+          <th>Responsable</th>
+          <th>Proyecto</th>
+          <th>Fecha límite</th>
+          <th>Fecha creación</th>
+          <th>Fecha finalización</th>
+        </tr>
+      </thead>
+      <tbody id="tablaTareasBody"></tbody>
+    </table>
+  </section>
+
+  <section id="formularioTareasContainer" style="display: none;">
+    <h2>Crear Nueva Tarea</h2>
+    <form id="formCrearTarea">
+      <input type="text" id="nombreTarea" placeholder="Nombre de la tarea" required>
+      <textarea id="descripcionTarea" placeholder="Descripción"></textarea>
+
+      <label>Estado:</label>
+      <select id="estadoTarea" required>
+        <option value="pendiente">Pendiente</option>
+        <option value="en_progreso">En Progreso</option>
+        <option value="completada">Completada</option>
+      </select>
+
+      <label>Prioridad:</label>
+      <select id="prioridadTarea" required>
+        <option value="alta">Alta</option>
+        <option value="media">Media</option>
+        <option value="baja">Baja</option>
+      </select>
+
+      <label>Proyecto:</label>
+      <select id="proyectoTarea" required></select>
+
+      <label>Responsable:</label>
+      <select id="responsableTarea" required></select>
+
+      <label>Fecha límite:</label>
+      <input type="date" id="fechaLimiteTarea" required>
+
+      <button type="submit">Crear Tarea</button>
+    </form>
+  </section>
+
+  <script src="/js/authFrontEnd.js"></script>
+  <script src="/js/tareasPagina.js"></script>
+</body>
+</html>

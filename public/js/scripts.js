@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  validarSesion('admin');  // Solo admins
+  validarSesion('admin');
   configurarLogout();
-  cargarUsuarios();
+
+  document.getElementById('btnCargarUsuarios').addEventListener('click', cargarUsuarios);
 });
 
 function cargarUsuarios() {
