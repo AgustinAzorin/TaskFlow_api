@@ -91,7 +91,7 @@ textarea {
 button[type="submit"],
 #btnCargarProyectos {
   padding: 10px 20px;
-  background-color: #28a745;
+  background-color: #007bff;
   border: none;
   color: white;
   font-weight: bold;
@@ -101,7 +101,7 @@ button[type="submit"],
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: #0056b3; /* azul oscuro */
 }
 
 #contenedorProyectos > div {
