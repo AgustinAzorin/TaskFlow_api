@@ -8,28 +8,38 @@
 </head>
 <body>
   <header>
-    <button id="logoutBtn">Cerrar sesión</button>
+    <nav>
+      <ul>
+        <li><a href="adminPagina.html">Inicio</a></li>
+        <li><a href="tareasPagina.html">Tareas</a></li>
+        <li><a href="proyectosPagina.html">Proyectos</a></li>
+        <li><a href="#" id="logoutBtn">Cerrar sesión</a></li>
+      </ul>
+    </nav>
   </header>
 
   <h1>Usuarios</h1>
   <button id="btnCargarUsuarios">Cargar Usuarios</button>
+
   <table id="usuariosTable">
     <thead><tr id="tableHeaders"></tr></thead>
     <tbody id="tableBody"></tbody>
   </table>
 
-  <form id="usuarioForm">
-    <h2>Agregar Usuario</h2>
-    <input type="text" id="nombre" placeholder="Nombre" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="contrasena" placeholder="Contraseña" required>
-    <select id="rol">
-      <option value="admin">admin</option>
-      <option value="usuario">user</option>
-    </select>
-    <input type="date" id="fecha" required>
-    <button type="submit">Agregar</button>
-  </form>
+  <div class="form-container">
+    <form id="usuarioForm">
+      <h2>Agregar Usuario</h2>
+      <input type="text" id="nombre" placeholder="Nombre" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="contrasena" placeholder="Contraseña" required>
+      <select id="rol">
+        <option value="admin">admin</option>
+        <option value="usuario">user</option>
+      </select>
+      <input type="date" id="fecha" required>
+      <button type="submit">Agregar</button>
+    </form>
+  </div>
 
   <script src="/js/scripts.js"></script>
   <script src="/js/authFrontEnd.js"></script>
