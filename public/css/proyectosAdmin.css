@@ -134,6 +134,7 @@ header button#logoutBtn {
   align-items: right;
 }
 
-header button#logoutBtn:hover {
-  background-color: #c82333;
+/* Agregá esto */
+nav ul li:last-child {
+  margin-left: auto;
 }
