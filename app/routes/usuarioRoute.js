@@ -7,54 +7,77 @@ const transporter = require('../utils/mailer');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Obtener usuarios
+// 🔐 Ruta para obtener usuarios con búsqueda opcional
 router.get('/', verificarToken, async (req, res) => {
   try {
-    const resultado = await pool.query('SELECT * FROM "Usuario"');
+    const filtro = req.query.buscar?.toLowerCase() || '';
+    const consulta = filtro
+      ? `
+        SELECT 
+          "Usuario_ID" AS id,
+          "Usuario_Nombre" AS nombre,
+          "Email" AS email,
+          "Rol" AS rol,
+          "Fecha_Creacion" AS fecha
+        FROM "Usuario"
+        WHERE LOWER("Usuario_Nombre") LIKE $1 OR LOWER("Email") LIKE $1
+      `
+      : `
+        SELECT 
+          "Usuario_ID" AS id,
+          "Usuario_Nombre" AS nombre,
+          "Email" AS email,
+          "Rol" AS rol,
+          "Fecha_Creacion" AS fecha
+        FROM "Usuario"
+      `;
+    
+    const valores = filtro ? [`%${filtro}%`] : [];
+    const resultado = await pool.query(consulta, valores);
     res.json(resultado.rows);
-  } catch (err) {
-    console.error('Error en la consulta:', err);
-    res.status(500).send('Error en la consulta');
+  } catch (error) {
+    console.error('❌ Error al buscar usuarios:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
-// Crear usuario
+// 🧾 Crear nuevo usuario
 router.post('/', async (req, res) => {
   const { nombre, email, contrasena, rol, fecha } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(contrasena, 10);
-    const query = 
-      'INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion") ' +
-      'VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const query = `
+      INSERT INTO "Usuario" ("Usuario_Nombre", "Email", "Contraseña", "Rol", "Fecha_Creacion")
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
     const valores = [nombre, email, hashedPassword, rol, fecha];
     const resultado = await pool.query(query, valores);
 
+    // Enviar correo de bienvenida
     await transporter.sendMail({
       from: `"TaskFlow App" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: '¡Registro exitoso!',
       text: `Hola ${nombre}, te registraste correctamente como ${rol}.`
     });
+
     res.status(201).json(resultado.rows[0]);
   } catch (err) {
-    console.error('Error al insertar usuario:', err.message);
+    console.error('❌ Error al insertar usuario:', err.message);
     res.status(500).send('Error al insertar usuario: ' + err.message);
   }
 });
 
-// Login
+// 🔑 Login
 router.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
-  console.log('Intentando login con:', email);
-
   try {
     const resultado = await pool.query(
       'SELECT * FROM "Usuario" WHERE "Email" = $1',
       [email]
     );
     const usuario = resultado.rows[0];
-    console.log('Usuario encontrado en BD:', usuario);
-
     if (!usuario) return res.status(404).json({ mensaje: 'Usuario no encontrado' });
 
     const esValida = await bcrypt.compare(contrasena, usuario['Contraseña']);
@@ -62,7 +85,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: usuario.Usuario_ID, email: usuario.Email, rol: usuario.Rol },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: '1h' }
     );
 
@@ -78,7 +101,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error al iniciar sesión:', error);
+    console.error('❌ Error al iniciar sesión:', error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
 });

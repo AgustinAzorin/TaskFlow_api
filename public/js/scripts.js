@@ -45,26 +45,49 @@ function cargarUsuarios() {
 }
 
 document.getElementById('buscarUsuario').addEventListener('input', function () {
-  const filtro = this.value.toLowerCase();
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '';
+  const filtro = this.value;
+  fetch(`https://taskflow-rnlr.onrender.com/usuarios?buscar=${encodeURIComponent(filtro)}`, {
+    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+  })
+    .then(res => res.json())
+    .then(usuarios => {
+      renderizarTabla(usuarios);
+    });
+});
 
-  const filtrados = (window.usuariosCargados || []).filter(usuario =>
-    (usuario.nombre && usuario.nombre.toLowerCase().includes(filtro)) ||
-    (usuario.email && usuario.email.toLowerCase().includes(filtro))
-  );
+function renderizarTabla(data) {
+  const tableHeaders = document.getElementById('tableHeaders');
+  const tableBody = document.getElementById('tableBody');
+  tableHeaders.innerHTML = '';
+  tableBody.innerHTML = '';
 
-  const keys = Object.keys(filtrados[0] || {}).filter(key => key !== 'contrasena');
-  filtrados.forEach(usuario => {
+  if (data.length === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 100;
+    td.textContent = 'No se encontraron usuarios.';
+    tr.appendChild(td);
+    tableBody.appendChild(tr);
+    return;
+  }
+
+  const keys = Object.keys(data[0]).filter(key => key !== 'contrasena');
+  keys.forEach(key => {
+    const th = document.createElement('th');
+    th.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+    tableHeaders.appendChild(th);
+  });
+
+  data.forEach(usuario => {
     const tr = document.createElement('tr');
     keys.forEach(key => {
       const td = document.createElement('td');
       td.textContent = usuario[key];
       tr.appendChild(td);
     });
-    tbody.appendChild(tr);
+    tableBody.appendChild(tr);
   });
-});
+}
 
 document.getElementById('usuarioForm').addEventListener('submit', function (e) {
   e.preventDefault();

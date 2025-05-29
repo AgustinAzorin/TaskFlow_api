@@ -85,5 +85,4 @@ router.post('/', verificarToken, autorizacionPorRol('admin'), async (req, res) =
   }
 });
 
-
 module.exports = router;
