@@ -19,12 +19,6 @@
   </header>
 
   <h1>Usuarios</h1>
-  <button id="btnCargarUsuarios">Cargar Usuarios</button>
-
-  <table id="usuariosTable">
-    <thead><tr id="tableHeaders"></tr></thead>
-    <tbody id="tableBody"></tbody>
-  </table>
 
   <div class="form-container">
     <form id="usuarioForm">
@@ -40,6 +34,17 @@
       <button type="submit">Agregar</button>
     </form>
   </div>
+
+  <div class="search-container">
+    <input type="text" id="buscarUsuario" placeholder="Buscar por nombre o email...">
+  </div>
+
+  <button id="btnCargarUsuarios">Cargar Usuarios</button>
+
+  <table id="usuariosTable">
+    <thead><tr id="tableHeaders"></tr></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
 
   <script src="/js/scripts.js"></script>
   <script src="/js/authFrontEnd.js"></script>

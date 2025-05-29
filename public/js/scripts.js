@@ -11,40 +11,60 @@ function cargarUsuarios() {
   fetch('https://taskflow-rnlr.onrender.com/usuarios', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
-  .then(response => response.json())
-  .then(data => {
-    const tableHeaders = document.getElementById('tableHeaders');
-    const tableBody = document.getElementById('tableBody');
-    tableHeaders.innerHTML = '';
-    tableBody.innerHTML = '';
+    .then(response => response.json())
+    .then(data => {
+      const tableHeaders = document.getElementById('tableHeaders');
+      const tableBody = document.getElementById('tableBody');
+      tableHeaders.innerHTML = '';
+      tableBody.innerHTML = '';
 
-    if (data.length > 0) {
-      Object.keys(data[0]).forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key;
-        tableHeaders.appendChild(th);
-      });
+      if (data.length > 0) {
+        const keys = Object.keys(data[0]).filter(key => key !== 'contrasena');
 
-      data.forEach(usuario => {
-        const tr = document.createElement('tr');
-        Object.values(usuario).forEach(value => {
-          const td = document.createElement('td');
-          td.textContent = value;
-          tr.appendChild(td);
+        keys.forEach(key => {
+          const th = document.createElement('th');
+          th.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+          tableHeaders.appendChild(th);
         });
-        tableBody.appendChild(tr);
-      });
-    } else {
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = 100;
-      td.textContent = 'No hay usuarios disponibles.';
-      tr.appendChild(td);
-      tableBody.appendChild(tr);
-    }
-  })
-  .catch(error => console.error('Error al obtener usuarios:', error));
+
+        data.forEach(usuario => {
+          const tr = document.createElement('tr');
+          keys.forEach(key => {
+            const td = document.createElement('td');
+            td.textContent = usuario[key];
+            tr.appendChild(td);
+          });
+          tableBody.appendChild(tr);
+        });
+
+        // Guardamos en window para filtrar luego
+        window.usuariosCargados = data;
+      }
+    })
+    .catch(error => console.error('Error al obtener usuarios:', error));
 }
+
+document.getElementById('buscarUsuario').addEventListener('input', function () {
+  const filtro = this.value.toLowerCase();
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+
+  const filtrados = (window.usuariosCargados || []).filter(usuario =>
+    (usuario.nombre && usuario.nombre.toLowerCase().includes(filtro)) ||
+    (usuario.email && usuario.email.toLowerCase().includes(filtro))
+  );
+
+  const keys = Object.keys(filtrados[0] || {}).filter(key => key !== 'contrasena');
+  filtrados.forEach(usuario => {
+    const tr = document.createElement('tr');
+    keys.forEach(key => {
+      const td = document.createElement('td');
+      td.textContent = usuario[key];
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+});
 
 document.getElementById('usuarioForm').addEventListener('submit', function (e) {
   e.preventDefault();
