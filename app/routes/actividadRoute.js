@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../utils/db');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 
-// GET /acciones
+// Obtener el historial de actividades
 router.get('/', verificarToken, autorizacionPorRol('admin'), async (req, res) => {
   try {
     const query = `
