@@ -3,7 +3,7 @@ CREATE TYPE rol_enum AS ENUM ('admin', 'usuario', 'invitado');
 CREATE TYPE estado_enum AS ENUM ('pendiente', 'en_progreso', 'completada');
 CREATE TYPE prioridad_enum AS ENUM ('alta', 'media', 'baja');
 
--- Crear tabla de usuarios
+
 CREATE TABLE "Usuario" (
   "Usuario_ID" SERIAL PRIMARY KEY,
   "Usuario_Nombre" VARCHAR(100),
@@ -13,7 +13,6 @@ CREATE TABLE "Usuario" (
   "Fecha_Creacion" DATE
 );
 
--- Crear tabla de proyectos
 CREATE TABLE "Proyecto" (
   "Proyecto_ID" SERIAL PRIMARY KEY,
   "Proyecto_Nombre" VARCHAR(100),
@@ -22,7 +21,6 @@ CREATE TABLE "Proyecto" (
   FOREIGN KEY ("Usuario_ID") REFERENCES "Usuario"("Usuario_ID") ON DELETE CASCADE
 );
 
--- Crear tabla de tareas
 CREATE TABLE "Tarea" (
   "Tarea_ID" SERIAL PRIMARY KEY,
   "Tarea_Nombre" VARCHAR(100),
