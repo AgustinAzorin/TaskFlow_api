@@ -1,9 +1,9 @@
-📘 TaskFlow API
+TaskFlow API
 ## ¿Que es?
 
 **TaskFlow** es una API RESTful diseñada para que empresas gestionen proyectos, tareas y usuarios de manera eficiente y colaborativa. Permite asignar tareas, organizar equipos y mantener un historial de actividades, todo en una sola plataforma.
 
-## 🚀 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 - **Backend**: Node.js, Express.js
 - **Base de Datos**: PostgreSQL (desplegada en Supabase)
@@ -12,24 +12,7 @@
 - **Notificaciones**: Nodemailer
 - **Frontend**: HTML, CSS, JavaScript
 
-## 📂 Estructura del Proyecto
-
-TaskFlow_api/
-├── app/
-│   ├── controllers/
-│   ├── middlewares/
-│   ├── routes/
-│   └── utils/
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── *.html
-├── setup.SQL
-├── index.js
-├── package.json
-└── [README.md](http://readme.md/)
-
-## 🔧 Instalación y Ejecución
+## Instalación y Ejecución
 
 ### **1. Clonar el repositorio**:
 
@@ -69,7 +52,6 @@ npm start
 
 El servidor estará disponible en `http://localhost:3000`.
 
-Aunque si se gusta vello en funcionamiento se puede encontrar en el siguiente link: [https://taskflow-api-a3ur.onrender.com](https://taskflow-api-a3ur.onrender.com/)
 
 ## 📌 Funcionalidades Principales
 
