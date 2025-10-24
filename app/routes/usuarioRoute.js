@@ -7,7 +7,7 @@ const transporter = require('../utils/mailer');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// 🔐 Ruta para obtener usuarios con búsqueda opcional
+// Ruta para obtener usuarios,incluido con filtro para busqueda
 router.get('/', verificarToken, async (req, res) => {
   try {
     const filtro = req.query.buscar?.toLowerCase() || '';
@@ -41,7 +41,7 @@ router.get('/', verificarToken, async (req, res) => {
   }
 });
 
-// 🧾 Crear nuevo usuario
+// Crear un nuevo usuario 
 router.post('/', async (req, res) => {
   const { nombre, email, contrasena, rol, fecha } = req.body;
   try {
@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 🔑 Login
+// Login
 router.post('/login', async (req, res) => {
   const { email, contrasena } = req.body;
   try {
