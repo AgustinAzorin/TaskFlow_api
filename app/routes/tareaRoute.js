@@ -4,7 +4,7 @@ const pool = require('../utils/db');
 const transporter = require('../utils/mailer');
 const { verificarToken, autorizacionPorRol } = require('../middlewares/auth');
 
-// GET /tareas
+// Obtener todas las tareas
 router.get('/', verificarToken, async (req, res) => {
   try {
     const { id: userId, rol } = req.user;
@@ -37,7 +37,7 @@ router.get('/', verificarToken, async (req, res) => {
   }
 });
 
-// POST /tareas
+// Crear una tarea
 router.post('/', verificarToken, autorizacionPorRol('admin'), async (req, res) => {
   const {
     nombre,
