@@ -1,11 +1,8 @@
-// auth.js
+// importaciones
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-/**
- * Middleware de autenticación.
- * Verifica que el token esté presente y sea válido.
- */
+// Funciones
 function verificarToken(req, res, next) {
   try {
     const authHeader = req.headers['authorization'];
@@ -31,9 +28,6 @@ function verificarToken(req, res, next) {
   }
 };
 
-/**
- * Middleware de autorización por rol.
- */
 function autorizacionPorRol(...roles) {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.rol)) {
@@ -46,7 +40,7 @@ function autorizacionPorRol(...roles) {
   };
 }
 
-// ✅ Exportamos correctamente los dos middlewares
+// Exportaciones
 module.exports = {
   verificarToken,
   autorizacionPorRol
