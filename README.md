@@ -53,7 +53,7 @@ npm start
 El servidor estará disponible en `http://localhost:3000`.
 
 
-## 📌 Funcionalidades Principales
+## Funcionalidades Principales
 
 - **Gestión de Usuarios**: Crear, listar y asignar roles (admin o usuario).
 - **Gestión de Proyectos**: Crear proyectos y asignar múltiples integrantes.
@@ -61,6 +61,6 @@ El servidor estará disponible en `http://localhost:3000`.
 - **Historial de Actividades**: Registro de acciones realizadas por los usuarios.
 - **Notificaciones por Correo**: Envío de correos electrónicos al asignar proyectos.
 
-## 📬 Contacto
+## Contacto
 
 Para consultas o sugerencias, puedes contactarme a través de azorin.agustin231106@gmail.com.
